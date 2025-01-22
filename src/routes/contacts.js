@@ -4,6 +4,6 @@ import { getAllContacts, getContactById } from '../controllers/contacts.js';
 const contactsRouter = Router();
 
 contactsRouter.get('/', getAllContacts);
-contactsRouter.get('/:contactId', getContactById);
+contactsRouter.get('/:id', getContactById);
 
 export default contactsRouter;
