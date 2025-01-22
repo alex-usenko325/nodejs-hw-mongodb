@@ -2,14 +2,16 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
+import initMongoConnection from './db/initMongoConnection.js';
 
 dotenv.config();
 
-const setupServer = () => {
+const setupServer = async () => {
   const app = express();
 
-  app.use(cors());
+  await initMongoConnection();
 
+  app.use(cors());
   app.use(pino());
 
   app.get('/', (req, res) => {
@@ -31,4 +33,4 @@ const setupServer = () => {
   });
 };
 
-export default setupServer;
+setupServer();
