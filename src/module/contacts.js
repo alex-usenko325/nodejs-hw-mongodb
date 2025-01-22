@@ -3,8 +3,8 @@ import { Schema, model } from 'mongoose';
 const contactSchema = new Schema(
   {
     name: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    email: { type: String },
+    phoneNumber: { type: String, required: true, unique: true },
+    email: { type: String, match: /^\S+@\S+\.\S+$/, unique: true },
     isFavourite: { type: Boolean, default: false },
     contactType: {
       type: String,
