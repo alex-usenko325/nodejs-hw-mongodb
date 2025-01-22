@@ -1,9 +1,9 @@
-const express = require('express');
-const { getAllContacts, getContactById } = require('../controllers/contacts');
+import { Router } from 'express';
+import { getAllContacts, getContactById } from '../controllers/contacts';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', getAllContacts);
 router.get('/:contactId', getContactById);
 
-module.exports = router;
+export default router;

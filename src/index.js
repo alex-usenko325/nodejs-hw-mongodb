@@ -1,2 +1,2 @@
-const setupServer = require('./server.js');
+import setupServer from './server.js';
 setupServer();
