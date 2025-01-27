@@ -1,40 +1,49 @@
-import Contact from '../module/contacts.js';
+import createError from 'http-errors';
+import { getAll, getById, create, update, remove } from '../services/contacts';
 
-export const getAllContacts = async (_, res) => {
-  try {
-    const contacts = await Contact.find();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    res.status(500).json({
-      message: 'An error occurred while fetching contacts',
-    });
-  }
+const getAllContacts = async (_, res) => {
+  const contacts = await getAll();
+  res.status(200).json({ status: 200, data: contacts });
 };
 
-export const getContactById = async (req, res) => {
-  const { id } = req.params;
+const getContactById = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await getById(contactId);
+  if (!contact) throw createError(404, 'Contact not found');
+  res.status(200).json({ status: 200, data: contact });
+};
 
-  try {
-    const contact = await Contact.findById(id);
+const createContact = async (req, res) => {
+  const newContact = await create(req.body);
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data: newContact,
+  });
+};
 
-    if (!contact) {
-      return res.status(404).json({ message: 'Contact not found' });
-    }
+const updateContact = async (req, res) => {
+  const { contactId } = req.params;
+  const updatedContact = await update(contactId, req.body);
+  if (!updatedContact) throw createError(404, 'Contact not found');
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: updatedContact,
+  });
+};
 
-    res.status(200).json({
-      status: 200,
-      message: `Successfully found contact with id ${id}!`,
-      data: contact,
-    });
-  } catch (error) {
-    console.error(`Error fetching contact with id ${id}:`, error);
-    res.status(500).json({
-      message: `An error occurred while fetching contact with id ${id}`,
-    });
-  }
+const deleteContact = async (req, res) => {
+  const { contactId } = req.params;
+  const deleted = await remove(contactId);
+  if (!deleted) throw createError(404, 'Contact not found');
+  res.status(204).end();
+};
+
+export default {
+  getAllContacts,
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact,
 };
