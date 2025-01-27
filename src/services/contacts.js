@@ -4,7 +4,7 @@ import {
   create as _create,
   findByIdAndUpdate,
   findByIdAndDelete,
-} from '../models/contact';
+} from '../module/contacts.js';
 
 const getAll = async () => find({});
 const getById = async (id) => findById(id);

@@ -1,5 +1,11 @@
 import createError from 'http-errors';
-import { getAll, getById, create, update, remove } from '../services/contacts';
+import {
+  getAll,
+  getById,
+  create,
+  update,
+  remove,
+} from '../services/contacts.js';
 
 const getAllContacts = async (_, res) => {
   const contacts = await getAll();
