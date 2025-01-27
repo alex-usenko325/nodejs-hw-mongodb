@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 
-const notFoundHandler = (_, next) => {
+const notFoundHandler = (req, res, next) => {
   next(createError(404, 'Route not found'));
 };
 
