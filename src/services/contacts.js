@@ -1,16 +1,11 @@
-import {
-  find,
-  findById,
-  create as _create,
-  findByIdAndUpdate,
-  findByIdAndDelete,
-} from '../module/contacts.js';
+import Contact from '../models/contact.js';
 
-const getAll = async () => find({});
-const getById = async (id) => findById(id);
-const create = async (data) => _create(data);
-const update = async (id, data) => findByIdAndUpdate(id, data, { new: true });
-const remove = async (id) => findByIdAndDelete(id);
+const getAll = async () => Contact.find({});
+const getById = async (id) => Contact.findById(id);
+const create = async (data) => Contact.create(data);
+const update = async (id, data) =>
+  Contact.findByIdAndUpdate(id, data, { new: true });
+const remove = async (id) => Contact.findByIdAndDelete(id);
 
 export default {
   getAll,
