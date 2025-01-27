@@ -1,4 +1,4 @@
-import Contact from '../models/contact.js';
+import Contact from '../module/contacts.js';
 
 const getAll = async () => Contact.find({});
 const getById = async (id) => Contact.findById(id);
