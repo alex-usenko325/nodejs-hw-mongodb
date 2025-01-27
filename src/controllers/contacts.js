@@ -19,10 +19,11 @@ const getContactById = async (req, res) => {
   res.status(200).json({ status: 200, data: contact });
 };
 
-const createContact = async (req, res) => {
+const createContact = async (req, res, next) => {
   try {
     if (!req.body.name || !req.body.phone) {
-      throw createError(400, 'Missing required fields: name or phone');
+      const error = createError(400, 'Missing required fields: name or phone');
+      return next(error);
     }
 
     const newContact = await create(req.body);
@@ -33,7 +34,7 @@ const createContact = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    throw createError(500, 'Failed to create contact');
+    next(createError(500, 'Failed to create contact'));
   }
 };
 
