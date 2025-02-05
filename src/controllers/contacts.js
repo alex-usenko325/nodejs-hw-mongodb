@@ -91,7 +91,7 @@ export const getContactsController = async (req, res) => {
 };
 
 const ctrl = {
-  getContactsController,
+  getAllContacts,
   getContactById,
   createContact,
   updateContact,
