@@ -12,9 +12,16 @@ export const getAll = async ({
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const parsedFilters = filter;
+  const contactsQuery = Contact.find();
 
-  const contactsQuery = Contact.find(parsedFilters);
+  if (filter.name) contactsQuery.where('name').equals(filter.name);
+  if (filter.email) contactsQuery.where('email').equals(filter.email);
+  if (filter.phoneNumber)
+    contactsQuery.where('phoneNumber').equals(filter.phoneNumber);
+  if (filter.isFavourite !== undefined)
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  if (filter.contactType)
+    contactsQuery.where('contactType').equals(filter.contactType);
 
   const [contactsCount, contacts] = await Promise.all([
     Contact.find().merge(contactsQuery).countDocuments(),
@@ -32,12 +39,8 @@ export const getAll = async ({
     ...paginationData,
   };
 };
-
 export const getById = async (id) => Contact.findById(id);
-
 export const create = async (data) => Contact.create(data);
-
 export const update = async (id, data) =>
   Contact.findByIdAndUpdate(id, data, { new: true });
-
 export const remove = async (id) => Contact.findByIdAndDelete(id);
