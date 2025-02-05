@@ -15,7 +15,7 @@ export const contactSchema = Joi.object({
     'any.required': 'Email is required',
   }),
 
-  phoneNumber: Joi.string()
+  phone: Joi.string()
     .pattern(/^\+?\d{10,15}$/)
     .required()
     .messages({
