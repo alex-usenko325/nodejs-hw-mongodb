@@ -7,7 +7,7 @@ import { contactSchema } from '../validation/contacts.js';
 
 const router = Router();
 
-router.get('/', ctrlWrapper(ctrl.getAllContacts));
+router.get('/', ctrlWrapper(ctrl.getContacts));
 router.get('/:contactId', isValidId, ctrlWrapper(ctrl.getContactById));
 
 router.post('/', validateBody(contactSchema), ctrlWrapper(ctrl.createContact));
