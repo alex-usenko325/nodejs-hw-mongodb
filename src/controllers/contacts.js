@@ -5,14 +5,18 @@ import {
   create,
   update,
   remove,
-  getContactsPage,
 } from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
-export const getAllContacts = async (_, res, next) => {
+export const getAllContacts = async (req, res, next) => {
+  const { page, perPage } = parsePaginationParams(req.query);
   try {
-    const contact = await getAll();
-    res.status(200).json({ status: 200, data: contact });
+    const contacts = await getAll({ page, perPage });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched contacts!',
+      data: contacts,
+    });
   } catch {
     next(createError(500, 'Failed to retrieve contacts'));
   }
@@ -74,27 +78,12 @@ export const deleteContact = async (req, res, next) => {
   }
 };
 
-export const getContactsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const contacts = await getContactsPage({
-    page,
-    perPage,
-  });
-
-  res.json({
-    status: 200,
-    message: 'Successfully contacts!',
-    data: contacts,
-  });
-};
-
 const ctrl = {
   getAllContacts,
   getContactById,
   createContact,
   updateContact,
   deleteContact,
-  getContactsController,
 };
 
 export default ctrl;
