@@ -89,3 +89,13 @@ export const getContactsController = async (req, res) => {
     data: contacts,
   });
 };
+
+const ctrl = {
+  getContactsController,
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact,
+};
+
+export default ctrl;
