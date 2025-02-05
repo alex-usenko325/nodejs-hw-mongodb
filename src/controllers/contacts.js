@@ -6,17 +6,18 @@ import {
   update,
   remove,
 } from '../services/contacts.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
-const getAllContacts = async (_, res, next) => {
+export const getAllContacts = async (_, res, next) => {
   try {
-    const contacts = await getAll();
-    res.status(200).json({ status: 200, data: contacts });
+    const contact = await getAll();
+    res.status(200).json({ status: 200, data: contact });
   } catch {
     next(createError(500, 'Failed to retrieve contacts'));
   }
 };
 
-const getContactById = async (req, res, next) => {
+export const getContactById = async (req, res, next) => {
   const { contactId } = req.params;
   try {
     const contact = await getById(contactId);
@@ -27,7 +28,7 @@ const getContactById = async (req, res, next) => {
   }
 };
 
-const createContact = async (req, res, next) => {
+export const createContact = async (req, res, next) => {
   try {
     if (!req.body.name || !req.body.phoneNumber) {
       const error = createError(
@@ -49,7 +50,7 @@ const createContact = async (req, res, next) => {
   }
 };
 
-const updateContact = async (req, res, next) => {
+export const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
   try {
     const updatedContact = await update(contactId, req.body);
@@ -64,7 +65,7 @@ const updateContact = async (req, res, next) => {
   }
 };
 
-const deleteContact = async (req, res, next) => {
+export const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
   try {
     const deleted = await remove(contactId);
@@ -75,10 +76,16 @@ const deleteContact = async (req, res, next) => {
   }
 };
 
-export default {
-  getAllContacts,
-  getContactById,
-  createContact,
-  updateContact,
-  deleteContact,
+export const getContactsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully contacts!',
+    data: contacts,
+  });
 };
