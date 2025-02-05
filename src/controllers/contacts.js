@@ -93,6 +93,7 @@ const ctrl = {
   createContact,
   updateContact,
   deleteContact,
+  getContactsController,
 };
 
 export default ctrl;
