@@ -35,7 +35,7 @@ export const getContactById = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    if (!req.body.name || !req.body.phone) {
+    if (!req.body.name || !req.body.phoneNumber) {
       const error = createError(400, 'Missing required fields: name or phone');
       return next(error);
     }
