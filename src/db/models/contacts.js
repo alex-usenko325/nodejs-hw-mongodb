@@ -26,10 +26,13 @@ const contactSchema = new Schema(
       enum: ['work', 'home', 'personal'],
       default: 'personal',
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true },
 );
 
-const Contact = model('contact', contactSchema);
-
-export default Contact;
+export const ContactsCollection = model('contact', contactSchema);

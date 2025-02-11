@@ -1,21 +1,29 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 import initMongoConnection from './db/initMongoConnection.js';
-import contactsRouter from './routes/contacts.js';
+import router from './routers/index.js';
+
 import setupMiddleware from './middlewares/setupMiddleware.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 
 dotenv.config();
 
-const setupServer = async () => {
+export const setupServer = async () => {
   const app = express();
+
+  app.use(express.json());
+  app.use(cors());
+  app.use(cookieParser());
 
   await initMongoConnection();
 
   setupMiddleware(app);
 
-  app.use('/contacts', contactsRouter);
+  app.use('/contacts', router);
 
   app.get('/', (_, res) => {
     res.send('Welcome to the server!');
@@ -31,5 +39,3 @@ const setupServer = async () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
-
-export default setupServer;
