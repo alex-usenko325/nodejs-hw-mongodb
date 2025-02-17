@@ -8,16 +8,11 @@ import { authenticate } from '../middlewares/authenticate.js';
 
 const contactRouter = Router();
 
-contactRouter.get('/', authenticate, ctrlWrapper(ctrl.getContacts));
-
-contactRouter.get(
-  '/:contactId',
-  authenticate,
-  isValidId,
-  ctrlWrapper(ctrl.getContactById),
-);
-
 contactRouter.use(authenticate);
+
+contactRouter.get('/', ctrlWrapper(ctrl.getContacts));
+
+contactRouter.get('/:contactId', isValidId, ctrlWrapper(ctrl.getContactById));
 
 contactRouter.post(
   '/',
