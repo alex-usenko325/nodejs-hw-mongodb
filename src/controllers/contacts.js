@@ -11,27 +11,21 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getContacts = async (req, res, next) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-
-  const { sortBy, sortOrder } = parseSortParams(req.query);
-
-  const filter = parseFilterParams(req.query);
-
   try {
-    const contacts = await getAll({
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-      filter,
-    });
+    const { page = 1, perPage = 10 } = parsePaginationParams(req.query) || {};
+    const { sortBy = 'name', sortOrder = 'asc' } =
+      parseSortParams(req.query) || {};
+    const filter = parseFilterParams(req.query) || {};
+
+    const contacts = await getAll({ page, perPage, sortBy, sortOrder, filter });
+
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched contacts!',
       data: contacts,
     });
-  } catch {
-    next(createError(500, 'Failed to retrieve contacts'));
+  } catch (error) {
+    next(createError(500, 'Failed to retrieve contacts', { cause: error }));
   }
 };
 
