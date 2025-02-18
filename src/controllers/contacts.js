@@ -31,13 +31,13 @@ export const getContacts = async (req, res, next) => {
 };
 
 export const getContactById = async (req, res, next) => {
-  const { contactId } = req.params;
-  const { id: userId } = req.user;
-
   try {
-    const contact = await getById(contactId);
+    const { contactId } = req.params;
+    const { id: userId } = req.user;
 
-    if (!contact || contact.owner.toString() !== userId) {
+    const contact = await getById(contactId, userId);
+
+    if (!contact) {
       throw createError(404, 'Contact not found');
     }
 
@@ -46,7 +46,6 @@ export const getContactById = async (req, res, next) => {
     next(error);
   }
 };
-
 export const createContact = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
