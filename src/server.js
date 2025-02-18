@@ -23,14 +23,13 @@ export const setupServer = async () => {
 
   setupMiddleware(app);
 
-  app.use('/contacts', router);
+  app.use('/', router);
 
   app.get('/', (_, res) => {
     res.send('Welcome to the server!');
   });
 
   app.use(notFoundHandler);
-
   app.use(errorHandler);
 
   const PORT = process.env.PORT || 4000;
