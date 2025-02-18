@@ -6,9 +6,12 @@ import {
   update,
   remove,
 } from '../services/contacts.js';
+import mongoose from 'mongoose';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 export const getContacts = async (req, res, next) => {
   try {
@@ -34,6 +37,9 @@ export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const { id: userId } = req.user;
+    if (!isValidObjectId(contactId)) {
+      throw createError(400, 'Invalid contact ID');
+    }
 
     const contact = await getById(contactId, userId);
 
@@ -46,6 +52,7 @@ export const getContactById = async (req, res, next) => {
     next(error);
   }
 };
+
 export const createContact = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
@@ -72,7 +79,11 @@ export const updateContact = async (req, res, next) => {
   const { id: userId } = req.user;
 
   try {
-    const contact = await getById(contactId);
+    if (!isValidObjectId(contactId)) {
+      throw createError(400, 'Invalid contact ID');
+    }
+
+    const contact = await getById(contactId, userId);
     if (!contact || contact.owner.toString() !== userId) {
       throw createError(404, 'Contact not found');
     }
@@ -94,7 +105,11 @@ export const deleteContact = async (req, res, next) => {
   const { id: userId } = req.user;
 
   try {
-    const contact = await getById(contactId);
+    if (!isValidObjectId(contactId)) {
+      throw createError(400, 'Invalid contact ID');
+    }
+
+    const contact = await getById(contactId, userId);
     if (!contact || contact.owner.toString() !== userId) {
       throw createError(404, 'Contact not found');
     }
