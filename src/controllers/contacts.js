@@ -6,28 +6,22 @@ import {
   update,
   remove,
 } from '../services/contacts.js';
-import mongoose from 'mongoose';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
-
 export const getContacts = async (req, res, next) => {
   try {
-    const { id: userId } = req.user;
-    const { page = 1, perPage = 10 } = parsePaginationParams(req.query) || {};
-    const { sortBy = 'name', sortOrder = 'asc' } =
-      parseSortParams(req.query) || {};
+    const userId = req.user.id;
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
     const filter = { ...parseFilterParams(req.query), owner: userId };
 
     const contacts = await getAll({ page, perPage, sortBy, sortOrder, filter });
 
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched contacts!',
-      data: contacts,
-    });
+    res
+      .status(200)
+      .json({ status: 200, message: 'Contacts retrieved!', data: contacts });
   } catch (error) {
     next(createError(500, 'Failed to retrieve contacts', { cause: error }));
   }
@@ -36,18 +30,14 @@ export const getContacts = async (req, res, next) => {
 export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const { id: userId } = req.user;
-    if (!isValidObjectId(contactId)) {
-      throw createError(400, 'Invalid contact ID');
-    }
+    const userId = req.user.id;
 
     const contact = await getById(contactId, userId);
+    if (!contact) throw createError(404, 'Contact not found');
 
-    if (!contact) {
-      throw createError(404, 'Contact not found');
-    }
-
-    res.status(200).json({ status: 200, data: contact });
+    res
+      .status(200)
+      .json({ status: 200, message: 'Contact found!', data: contact });
   } catch (error) {
     next(error);
   }
@@ -55,66 +45,40 @@ export const getContactById = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    const { id: userId } = req.user;
-
-    if (!req.body.name || !req.body.phoneNumber) {
-      return next(createError(400, 'Missing required fields: name or phone'));
-    }
-
+    const userId = req.user.id;
     const newContact = await create({ ...req.body, owner: userId });
 
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a contact!',
-      data: newContact,
-    });
+    res
+      .status(201)
+      .json({ status: 201, message: 'Contact created!', data: newContact });
   } catch (error) {
-    console.error(error);
-    next(createError(500, 'Failed to create contact'));
+    next(createError(500, 'Failed to create contact', { cause: error }));
   }
 };
 
 export const updateContact = async (req, res, next) => {
-  const { contactId } = req.params;
-  const { id: userId } = req.user;
-
   try {
-    if (!isValidObjectId(contactId)) {
-      throw createError(400, 'Invalid contact ID');
-    }
+    const { contactId } = req.params;
+    const userId = req.user.id;
 
-    const contact = await getById(contactId, userId);
-    if (!contact || contact.owner.toString() !== userId) {
-      throw createError(404, 'Contact not found');
-    }
+    const contact = await update(contactId, userId, req.body);
+    if (!contact) throw createError(404, 'Contact not found');
 
-    const updatedContact = await update(contactId, req.body);
-
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully updated contact!',
-      data: updatedContact,
-    });
+    res
+      .status(200)
+      .json({ status: 200, message: 'Contact updated!', data: contact });
   } catch (error) {
     next(error);
   }
 };
 
 export const deleteContact = async (req, res, next) => {
-  const { contactId } = req.params;
-  const { id: userId } = req.user;
-
   try {
-    if (!isValidObjectId(contactId)) {
-      throw createError(400, 'Invalid contact ID');
-    }
+    const { contactId } = req.params;
+    const userId = req.user.id;
 
-    const contact = await getById(contactId, userId);
-    if (!contact || contact.owner.toString() !== userId) {
-      throw createError(404, 'Contact not found');
-    }
-
-    await remove(contactId);
+    const contact = await remove(contactId, userId);
+    if (!contact) throw createError(404, 'Contact not found');
 
     res.status(204).end();
   } catch (error) {
