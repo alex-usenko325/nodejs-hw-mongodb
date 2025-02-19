@@ -45,8 +45,14 @@ export const getContactById = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const newContact = await create({ ...req.body, owner: userId });
+    console.log('req.user:', req.user);
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: no user ID' });
+    }
+
+    console.log('Creating contact with userId:', userId);
+    const newContact = await create({ ...req.body, userId });
 
     res
       .status(201)
