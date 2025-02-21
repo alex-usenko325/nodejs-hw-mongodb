@@ -3,10 +3,6 @@ import nodemailer from 'nodemailer';
 import { SMTP } from '../constants/index.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 
-console.log('SMTP_HOST:', getEnvVar('SMTP_HOST'));
-console.log('SMTP_PORT:', getEnvVar('SMTP_PORT'));
-console.log('SMTP_USER:', getEnvVar('SMTP_USER'));
-console.log('SMTP_PASSWORD:', getEnvVar('SMTP_PASSWORD'));
 const transporter = nodemailer.createTransport({
   host: getEnvVar(SMTP.SMTP_HOST),
   port: Number(getEnvVar(SMTP.SMTP_PORT)),
@@ -17,5 +13,16 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (options) => {
-  return await transporter.sendMail(options);
+  try {
+    console.log('SMTP Host:', getEnvVar('SMTP_HOST'));
+    console.log('SMTP User:', getEnvVar('SMTP_USER'));
+    console.log('Sending email to:', options.to);
+
+    const info = await transporter.sendMail(options);
+    console.log('Email sent:', info.response);
+
+    return info;
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 };
