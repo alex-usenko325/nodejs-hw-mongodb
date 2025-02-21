@@ -15,9 +15,16 @@ export const getContacts = async (req, res, next) => {
     const userId = req.user.id;
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query);
-    const filter = { ...parseFilterParams(req.query), owner: userId };
+    const filter = parseFilterParams(req.query);
 
-    const contacts = await getAll({ page, perPage, sortBy, sortOrder, filter });
+    const contacts = await getAll({
+      userId,
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter,
+    });
 
     res
       .status(200)
@@ -26,7 +33,6 @@ export const getContacts = async (req, res, next) => {
     next(createError(500, 'Failed to retrieve contacts', { cause: error }));
   }
 };
-
 export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
