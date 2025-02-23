@@ -3,7 +3,7 @@ import ctrl from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
-import { contactSchema } from '../validation/contacts.js';
+import { contactSchema, contactUpdateSchema } from '../validation/contacts.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
 
@@ -34,7 +34,7 @@ contactRouter.patch(
   '/:contactId',
   isValidId,
   upload.single('photo'),
-  validateBody(contactSchema),
+  validateBody(contactUpdateSchema),
   ctrlWrapper(ctrl.updateContact),
 );
 

@@ -33,3 +33,11 @@ export const contactSchema = Joi.object({
       'any.only': 'Contact type must be one of "personal","home" or "work"',
     }),
 });
+
+export const contactUpdateSchema = Joi.object({
+  name: Joi.string().min(3).max(20).optional(),
+  email: Joi.string().email().optional(),
+  phoneNumber: Joi.string().optional(),
+  isFavourite: Joi.boolean().optional(),
+  contactType: Joi.string().valid('work', 'home', 'personal').optional(),
+}).min(1);
