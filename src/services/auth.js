@@ -28,16 +28,13 @@ const createSession = async (userId) => {
 };
 
 export const registerUser = async (payload) => {
-  const normalizedEmail = payload.email.toLowerCase();
-
-  const user = await UsersCollection.findOne({ email: normalizedEmail });
+  const user = await UsersCollection.findOne({ email: payload.email });
   if (user) throw createHttpError(409, 'Email in use');
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   return await UsersCollection.create({
     ...payload,
-    email: normalizedEmail,
     password: encryptedPassword,
   });
 };

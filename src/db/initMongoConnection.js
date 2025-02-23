@@ -1,6 +1,6 @@
 import { connect } from 'mongoose';
 
-const initMongoConnection = async () => {
+export const initMongoDB = async () => {
   const { MONGODB_USER, MONGODB_PASSWORD, MONGODB_URL, MONGODB_DB } =
     process.env;
 
@@ -19,5 +19,3 @@ const initMongoConnection = async () => {
     process.exit(1);
   }
 };
-
-export default initMongoConnection;

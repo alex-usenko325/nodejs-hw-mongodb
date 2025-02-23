@@ -9,6 +9,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getContacts = async (req, res, next) => {
   try {
@@ -73,13 +74,28 @@ export const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const userId = req.user.id;
+    const photo = req.file;
 
-    const contact = await update(contactId, userId, req.body);
+    let photoUrl;
+
+    if (photo) {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+
+    const updatedData = {
+      ...req.body,
+      photo: photoUrl,
+    };
+
+    const contact = await update(contactId, userId, updatedData);
+
     if (!contact) throw createError(404, 'Contact not found');
 
-    res
-      .status(200)
-      .json({ status: 200, message: 'Contact updated!', data: contact });
+    res.status(200).json({
+      status: 200,
+      message: 'Contact updated!',
+      data: contact,
+    });
   } catch (error) {
     next(error);
   }
