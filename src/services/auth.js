@@ -22,13 +22,17 @@ const createSession = async (userId) => {
   const accessToken = randomBytes(30).toString('base64');
   const refreshToken = randomBytes(30).toString('base64');
 
-  return await SessionsCollection.create({
+  const session = await SessionsCollection.create({
     userId,
     accessToken,
     refreshToken,
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
   });
+
+  console.log(`Session created for user ${userId}:`, session);
+
+  return session;
 };
 
 export const registerUser = async (payload) => {
@@ -142,7 +146,7 @@ export const loginOrSignupWithGoogle = async (code) => {
 
   let user = await UsersCollection.findOne({ email: payload.email });
   if (!user) {
-    const password = await bcrypt.hash(randomBytes(10), 10);
+    const password = await bcrypt.hash(randomBytes(10).toString('hex'), 10);
     user = await UsersCollection.create({
       email: payload.email,
       name: getFullNameFromGoogleTokenPayload(payload),
@@ -150,10 +154,7 @@ export const loginOrSignupWithGoogle = async (code) => {
     });
   }
 
-  const newSession = createSession();
+  await SessionsCollection.deleteMany({ userId: user._id });
 
-  return await SessionsCollection.create({
-    userId: user._id,
-    ...newSession,
-  });
+  return await createSession(user._id);
 };
