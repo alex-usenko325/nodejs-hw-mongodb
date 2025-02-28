@@ -9,6 +9,7 @@ import router from './routers/index.js';
 import setupMiddleware from './middlewares/setupMiddleware.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+import swaggerDocs from './middlewares/swaggerDocs.js';
 
 import { UPLOAD_DIR } from './constants/index.js';
 
@@ -28,6 +29,9 @@ export const startServer = async () => {
   app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use('/', router);
+
+  app.use('/upload', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   app.get('/', (_, res) => {
     res.send('Welcome to the server!');
