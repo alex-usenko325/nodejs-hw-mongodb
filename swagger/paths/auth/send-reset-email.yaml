@@ -1,0 +1,45 @@
+tags:
+  - Auth
+summary: Request password reset
+operationId: requestPasswordReset
+description: Request a password reset by providing an email.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            format: email
+            example: 'user@example.com'
+responses:
+  '200':
+    description: Password reset request successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Password reset instructions sent to your email.'
+  '404':
+    description: Email not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: 'User with this email not found.'

@@ -1,8 +1,8 @@
 tags:
   - Contacts
-summary: Get contact by id
-operationId: getContact
-description: 'Get contact by id'
+summary: Update contact by ID
+operationId: updateContact
+description: Update a contact's details by its ID.
 security:
   - bearerAuth: []
 parameters:
@@ -12,24 +12,26 @@ parameters:
     schema:
       type: string
       example: '65ca67e7ae7f10c88b598384'
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../../components/shemas/contact.yaml
 responses:
   '200':
-    description: 'Get contact by id'
+    description: Contact updated successfully.
     content:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
             status:
               type: integer
               example: 200
             message:
               type: string
-              example: Successfully found contact with id 65ca67e7ae7f10c88b598384!
+              example: Successfully updated contact!
             data:
               type: object
               $ref: ../../../components/shemas/contact.yaml
