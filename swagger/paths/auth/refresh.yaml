@@ -21,7 +21,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/session.yaml'
+          $ref: ../../components/shemas/session.yaml
   '401':
     description: Invalid or expired refresh token
     content:

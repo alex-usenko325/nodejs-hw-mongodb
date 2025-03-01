@@ -36,9 +36,9 @@ responses:
               type: string
               example: 'Successfully logged in!'
             session:
-              $ref: '../../components/schemas/session.yaml'
+              $ref: '../../components/shemas/session.yaml'
             user:
-              $ref: '../../components/schemas/user.yaml'
+              $ref: '../../components/shemas/user.yaml'
 
   '400':
     $ref: '../../components/responses/400.yaml'

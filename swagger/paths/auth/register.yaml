@@ -40,6 +40,6 @@ responses:
               type: string
               example: 'Successfully registered!'
             data:
-              $ref: '../../components/schemas/user.yaml'
+              $ref: ../../components/shemas/user.yaml
   '400':
-    $ref: '../../components/responses/400.yaml'
+    $ref: ../../components/responses/400.yaml
