@@ -27,11 +27,9 @@ export const startServer = async () => {
   setupMiddleware(app);
 
   app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   app.use('/', router);
-
-  app.use('/upload', express.static(UPLOAD_DIR));
-  app.use('/api-docs', swaggerDocs());
 
   app.get('/', (_, res) => {
     res.send('Welcome to the server!');
